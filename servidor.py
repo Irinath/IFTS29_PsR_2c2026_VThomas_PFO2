@@ -1,9 +1,10 @@
-import sqlite3;
-import bcrypt;
-from flask import Flask, request, jsonify;
+import sqlite3
+import bcrypt
+from flask import Flask, request, jsonify
+from contextlib import closing
 
 app = Flask(__name__)
-DB= "tareas.db"
+DB = "tareas.db"
 
 def get_db(): #conexión con la base de datos
     conn = sqlite3.connect(DB)
@@ -53,7 +54,7 @@ def login():
             "SELECT contraseña_hash FROM usuarios WHERE usuario = ?", (usuario,)
         ).fetchone()
 
-    if fila and bcrypt.checkpw(contraseña.encode("uft-8"), fila["contraseña_hash"]):
+    if fila and bcrypt.checkpw(contraseña.encode("utf-8"), fila["contraseña_hash"]):
         return jsonify({"mensaje": "Login exitoso!!", "tareas": "/tareas"}), 200
 
     return jsonify({"error": "Credenciales inválidas"}), 401
